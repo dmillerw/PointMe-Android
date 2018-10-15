@@ -1,9 +1,7 @@
 package dmillerw.me.pointmelistener;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -37,15 +35,15 @@ public class WebServer extends NanoHTTPD {
 
     @Override
     public Response serve(NanoHTTPD.IHTTPSession session) {
-        Map<String, String> data = new HashMap<>();
-        data.put("isNavigationActive", isNavigationActive ? "true" : "false");
+        JsonObject object = new JsonObject();
+        object.addProperty("isNavigationActive", isNavigationActive);
         if (isNavigationActive) {
-            data.put("stageDistance", stageDistance);
-            data.put("stageText", stageText);
-            data.put("stateSubtext", stateSubtext);
-            data.put("stageIcon", stageIcon);
+            object.addProperty("stageDistance", stageDistance);
+            object.addProperty("stageText", stageText);
+            object.addProperty("stateSubtext", stateSubtext);
+            object.addProperty("stageIcon", stageIcon);
         }
 
-        return newFixedLengthResponse(Response.Status.OK, "application/json", data.toString());
+        return newFixedLengthResponse(Response.Status.OK, "application/json", new Gson().toJson(object));
     }
 }
